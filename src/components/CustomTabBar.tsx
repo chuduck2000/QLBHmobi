@@ -12,7 +12,7 @@ import Animated, {
   FadeOutRight,
 } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
-// import { useAppSelector } from '../store';
+import { useAppSelector } from '../store';
 type iconName = keyof typeof icons;
 type iconProps = {
   name: iconName;
@@ -42,8 +42,8 @@ const CustomTabBar: React.FC<CustomTabBarType> = ({
   const { bottom } = useSafeAreaInsets();
   const { width } = Dimensions.get('window');
   const navigation = useNavigation();
-  // const cartList = useAppSelector((state: any) => state.cart.cartList);
-  // console.log('cartList', cartList.length);
+  const cartList = useAppSelector((state: any) => state.cart.cartList);
+  console.log('cartList', cartList.length);
 
   return (
     <MotiView
@@ -65,11 +65,11 @@ const CustomTabBar: React.FC<CustomTabBarType> = ({
             layout={LinearTransition.springify().damping(80).stiffness(200)}
             animate={styles.itemView}
           >
-            {/* {!isSelected && item.route === 'Cart' && cartList.length > 0 && (
+            {!isSelected && item.route === 'Cart' && cartList.length > 0 && (
               <View style={styles.productNumberContainer}>
                 <Text style={styles.productNumber}>{cartList.length} </Text>
               </View>
-            )} */}
+            )}
 
             <Pressable
               onPress={() => {

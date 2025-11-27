@@ -17,7 +17,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-// import { AppRootState, useAppSelector } from '../store';
+import { AppRootState, useAppSelector } from '../store';
 
 const IMAGE_WIDTH = Dimensions.get('window').width * 0.32;
 const ProductCard: React.FC<ProductCardType> = ({
@@ -30,9 +30,9 @@ const ProductCard: React.FC<ProductCardType> = ({
   onPress,
 }) => {
   const opacity = useSharedValue(1);
-  //   const inCard = useAppSelector((state: AppRootState) =>
-  //     state.cart.cartList.some(item => item._id === _id),
-  //   );
+  const inCard = useAppSelector((state: AppRootState) =>
+    state.cart.cartList.some(item => item._id === _id),
+  );
   const AnimatedTouchableOpacity =
     Animated.createAnimatedComponent(TouchableOpacity);
   // know if that product is existed in the cartList -> to disable the button
@@ -42,9 +42,9 @@ const ProductCard: React.FC<ProductCardType> = ({
     };
   });
   // animate the opacity to 0.5 when in card
-  //   useEffect(() => {
-  //     opacity.value = withSpring(inCard ? 0.5 : 1);
-  //   }, [inCard]);
+  useEffect(() => {
+    opacity.value = withSpring(inCard ? 0.5 : 1);
+  }, [inCard]);
   return (
     <LinearGradient
       start={{ x: 0, y: 0 }}
@@ -74,7 +74,7 @@ const ProductCard: React.FC<ProductCardType> = ({
             $ <Text style={styles.CardPriceAmount}>{price}</Text>
           </Text>
           <AnimatedTouchableOpacity
-            // disabled={inCard}
+            disabled={inCard}
             style={[animatedStyle, styles.AddToCardButton]}
             onPress={onPress}
           >

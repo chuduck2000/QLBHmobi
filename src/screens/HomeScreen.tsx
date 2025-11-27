@@ -10,21 +10,15 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  categories,
-  COLORS,
-  FONT_FAMILY,
-  homeTitle,
-  ProductDataSample,
-} from '../constants';
+import { categories, COLORS, FONT_FAMILY, homeTitle } from '../constants';
 import { MotiView } from 'moti';
 import { Search, X } from 'lucide-react-native';
 import ProductCard from '../components/ProductCard';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-// import { AppRootState, useAppDispatch, useAppSelector } from '../store';
-// import { useGetProductsQuery } from '../store/api';
+import { AppRootState, useAppDispatch, useAppSelector } from '../store';
+import { useGetProductsQuery } from '../store/api';
 
 // ["find", "your", "next"]
 type HomeScreenPropType = NativeStackNavigationProp<
@@ -35,18 +29,18 @@ const HomeScreen = () => {
   const animatedTitle = [...homeTitle.split(' '), '"'].filter(
     word => word !== '"',
   );
-  // const { data: products } = useGetProductsQuery(undefined, {
-  //   pollingInterval: 5000,
-  //   refetchOnFocus: true,
-  //   refetchOnMountOrArgChange: true,
-  // });
+  const { data: products } = useGetProductsQuery(undefined, {
+    pollingInterval: 5000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
   const [searchText, setSearchText] = useState('');
   const navigation = useNavigation<HomeScreenPropType>();
   // use selector...
-  // const dispatch = useAppDispatch();
-  // const totalProduct = useAppSelector(
-  //   (state: AppRootState) => state.cart.cartList,
-  // );
+  const dispatch = useAppDispatch();
+  const totalProduct = useAppSelector(
+    (state: AppRootState) => state.cart.cartList,
+  );
   const [selectedCategory, setSelectedCategory] = useState({
     index: 0,
     category: categories[0],
@@ -61,7 +55,7 @@ const HomeScreen = () => {
   }, []);
   // filtered data
   const AllCategories = selectedCategory.category === 'All';
-  const filteredProductsWithCategory = ProductDataSample?.filter(item =>
+  const filteredProductsWithCategory = products?.filter(item =>
     AllCategories ? item : item.category === selectedCategory.category,
   );
   const filteredProductsWithSearch = filteredProductsWithCategory?.filter(
@@ -69,16 +63,16 @@ const HomeScreen = () => {
   );
 
   // add item to the cart
-  // const handleAddItemToTheCart = (product: any) => {
-  //   dispatch({
-  //     type: 'cart/addToCart',
-  //     payload: {
-  //       ...product,
-  //       selectedSize: 'S',
-  //     },
-  //   });
-  //   console.log(totalProduct);
-  // };
+  const handleAddItemToTheCart = (product: any) => {
+    dispatch({
+      type: 'cart/addToCart',
+      payload: {
+        ...product,
+        selectedSize: 'S',
+      },
+    });
+    console.log(totalProduct);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -304,7 +298,7 @@ const HomeScreen = () => {
                       brand={item.brand}
                       average_rate={item.average_rating}
                       price={Number(item.prices[0].price)}
-                      onPress={() => {}}
+                      onPress={() => handleAddItemToTheCart(item)}
                     />
                   </MotiView>
                 </TouchableOpacity>

@@ -9,30 +9,32 @@ import React, { useEffect, useState } from 'react';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS, FONT_FAMILY, ProductDataSample } from '../constants';
+import { COLORS, FONT_FAMILY } from '../constants';
 import { Dimensions } from 'react-native';
 import ImageSlider from '../components/ImageSlider';
 import { MotiText, MotiView } from 'moti';
 import { ArrowLeft, Star } from 'lucide-react-native';
 import { MotiPressable } from 'moti/interactions';
 import PaymentFooter from '../components/PaymentFooter';
-// import { useAppDispatch } from '../store';
-// import { ProductType, useGetProductsQuery } from '../store/api';
+import { useAppDispatch } from '../store';
+import { ProductType, useGetProductsQuery } from '../store/api';
 
 type ProductDetailsScreenProp = RouteProp<RootStackParamList, 'ProductDetails'>;
 const ProductDetailsScreen = () => {
   const route = useRoute<ProductDetailsScreenProp>();
   const { _id } = route.params;
-  // const { data: products } = useGetProductsQuery(undefined, {
-  //   pollingInterval: 5000,
-  //   refetchOnFocus: true,
-  //   refetchOnMountOrArgChange: true,
-  // });
+  const { data: products } = useGetProductsQuery(undefined, {
+    pollingInterval: 5000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
   const navigation = useNavigation();
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   // dummy data..
-  const productItem = ProductDataSample.filter(item => item._id === _id)[0];
+  const productItem = products?.filter(
+    item => item._id === _id,
+  )[0] as ProductType;
   const animatedTitle = [...productItem.name.split(' '), '"'].filter(
     word => word !== '"',
   );
